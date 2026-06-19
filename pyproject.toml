@@ -1,0 +1,13 @@
+[project]
+name = "transformer-minimal"
+version = "0.1.0"
+description = "Minimal Transformer implementation for technical interview preparation"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "torch>=2.12.0",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
