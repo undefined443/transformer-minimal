@@ -28,7 +28,7 @@ uv run python -c "from transformer import Transformer; print(Transformer)"
 ## Example Usage
 
 ```python
-import torch
+import torch as th
 from transformer import Transformer
 
 # Initialize model
@@ -43,8 +43,8 @@ model = Transformer(
 )
 
 # Create dummy input (batch_size=2, seq_len=10)
-src = torch.randint(0, 10000, (2, 10))
-tgt = torch.randint(0, 10000, (2, 8))
+src = th.randint(0, 10000, (2, 10))
+tgt = th.randint(0, 10000, (2, 8))
 
 # Forward pass
 logits = model(src, tgt)  # Shape: (2, 8, 10000)
