@@ -30,12 +30,14 @@ class Transformer(nn.Module):
 
         self.max_seq_len = max_seq_len
 
+    def _causal_mask(self, length: int, device: th.device) -> th.Tensor:
+        return th.triu(th.ones(length, length, device=device), diagonal=1)
+
     def forward(
         self,
         src: th.Tensor,
         tgt: th.Tensor,
         src_mask: th.Tensor | None = None,
-        tgt_mask: th.Tensor | None = None,
     ) -> th.Tensor:
         L_src = src.shape[1]
         L_tgt = tgt.shape[1]
@@ -44,7 +46,7 @@ class Transformer(nn.Module):
         tgt_embd = self.tgt_embd(tgt) + self.tgt_pos(th.arange(L_tgt, device=tgt.device))
 
         enc_output = self.encoder(src_embd, src_mask)
-        dec_output = self.decoder(tgt_embd, enc_output, tgt_mask)
+        dec_output = self.decoder(tgt_embd, enc_output, self._causal_mask(L_tgt, tgt.device))
 
         logits = self.out_proj(dec_output)
         return logits

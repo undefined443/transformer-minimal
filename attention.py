@@ -1,8 +1,10 @@
+"""Multi-head attention for both self-attention and cross-attention."""
+
 import torch as th
 import torch.nn as nn
 
 
-class CrossAttention(nn.Module):
+class MultiHeadAttention(nn.Module):
     def __init__(self, d_model: int, num_heads: int) -> None:
         super().__init__()
         assert d_model % num_heads == 0
@@ -14,19 +16,20 @@ class CrossAttention(nn.Module):
         self.out_proj = nn.Linear(d_model, d_model)
 
     def forward(
-        self, x: th.Tensor, k: th.Tensor, v: th.Tensor, mask: th.Tensor | None = None
+        self, x: th.Tensor, kv: th.Tensor | None = None, mask: th.Tensor | None = None
     ) -> th.Tensor:
+        if kv is None:
+            kv = x
         B, L, D = x.shape
         H, HD = self.num_heads, self.head_dim
 
         def split_heads(z: th.Tensor) -> th.Tensor:
-            L = z.shape[1]
-            z = z.view(B, L, H, HD).transpose(1, 2)
-            return z
+            Lz = z.shape[1]
+            return z.view(B, Lz, H, HD).transpose(1, 2)
 
         q = split_heads(self.q_proj(x))
-        k = split_heads(self.k_proj(k))
-        v = split_heads(self.v_proj(v))
+        k = split_heads(self.k_proj(kv))
+        v = split_heads(self.v_proj(kv))
 
         scale = HD**0.5
         attn = q @ k.transpose(-2, -1) / scale

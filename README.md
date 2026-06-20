@@ -12,8 +12,7 @@ Standard Encoder-Decoder Transformer with:
 
 ## Module Structure
 
-- `self_attention.py` — Multi-head self-attention mechanism
-- `cross_attention.py` — Multi-head cross-attention for decoder
+- `attention.py` — Multi-head attention (shared by self-attention and cross-attention)
 - `encoder.py` — Transformer encoder stack
 - `decoder.py` — Transformer decoder stack
 - `transformer.py` — Full encoder-decoder model
